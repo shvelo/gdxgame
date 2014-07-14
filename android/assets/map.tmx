@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="56" height="31" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="RPGpack_sheet_2X" tilewidth="64" tileheight="64">
+  <image source="spritesheet.png" width="2560" height="1664"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="56" height="31">
+  <data encoding="base64" compression="zlib">
+   eJzllddtxDAMhv3meIDUEVKQCVJHSMFNkDpCCjJB6ggpyASpu6ROkl+AAhAEVe9s03cPHyjdyRA/U5TLoijGQAXKIRy3vX/KmM6ryGe15C6NK4/fMNRv1Px4vjGuGjxy/fjarvlJuY+aX5f7r87zHDvOWScRU0MtfiWD/+Y7f6H8+b6u91aXH53PgjkwDxbInP4u1bYfv6bOp2GDuZj5JolbYDvDz5V/E350fsRczPyYxBNwmujH1/merdvvlrmY+R2J9+Ah0S90bzXpx/uP9+H/XMqR30sx+8esH6Qf7zPab7F5h/Zw+TXVf7TPeL+NgwkwCaaEOA1mwKJFm5+B9hntN8MSWAYrQlwFa2Ad9KxfKGde70GcVek/3/70jt8Bu2BPiPvgAByS+mnx8323qOc5uACXQrwC1+DG1q+n2M81fgLP4EWIr+ANvIMzi+87IPVf234f4BN8CfEb/IBf8GjxfRc0+qWMQ/dYl/2kWvn8pFj3++937Kql5Kzdz+cYk7NWv5Q6htDi5LrrfX2UgpZzGKqZ6+y66tamX+67yKnlHz5oazw=
+  </data>
+ </layer>
+ <layer name="Tile Layer 5" width="56" height="31">
+  <data encoding="base64" compression="zlib">
+   eJzt07kNgDAQRNGVHXH03x9HIbgBWyRmhfReOskkPwIAACDXVSLukv1inq1G7DX7BbynSZjvaI2dnc5G218srbG109loA4CvPF6cB5E=
+  </data>
+ </layer>
+ <layer name="Tile Layer 2" width="56" height="31">
+  <data encoding="base64" compression="zlib">
+   eJztz80NQEAYBNDd6AwHHdADB53SjavvoAJZv3kvmetkJiUAAAAoo8kptZE60uWn15Q3xqfpyPzDf8B9lqp853pB51lbbOkLZ3jRPwC+bwfYrAzP
+  </data>
+ </layer>
+ <layer name="Tile Layer 3" width="56" height="31">
+  <data encoding="base64" compression="zlib">
+   eJzlWFdOxDAQdXa5BUWi3IQiUW5CkShXgAtQJMoV4AKUO1B+KLegSJQPHmJHsiKPZ7weJ4t40gg2TjLz7Oc3VpxLx3zXuYWufN9jx7mnTh8JWsY6uG0o+HVxz5DivkHDIWo+arHuceSeaCm/VpM52tXujxKQNEm8crSr3R9aWOrBYk9K+yO13jb0cI81fmhIv9Z60KBCvk5D+pX0EJpraf6vMXYTGKfnJpFvSqiRy2Ht76G5lub/HXV9BGqj5xYRS0KNOWtsiefKuRfEK+Kt+r3GrR9hE3VvGXpIqXf8YBg8RhCjiLEeJ279CMfIexLITbq18LzYO1K4T4PHDGIWMcdwovWU9h3p1sLzYu9Imb9l1L2CWEWsMfxoPaV9R7qNeYi2t8TekTJ/u8i1h9hHHAh5pX3H6daHhe+k9Ixz/L1AXCKuBH6a+gcB9Tncxv87mXXnnGlK4xTczjL5WfW7nL4g9TUraM43HDTe6GvF51Tva6X4as43HDTe6Gsl1qulPt4vOJ/VrGvb3x804Hw2Z13/AqT+aYGYj3Nj9ev+75RvNbn9U+MXMR/nxurX/d9Nfmcs5RepyOkPObA8Y8T6cGkf4XiE9CdxvsXYXWA81odL+0jKWUm69xPcvnr8fK7Uh0P+EvIRbp4GCT5X6sNaf/Gf/S/4BtZrhzI=
+  </data>
+ </layer>
+ <layer name="Tile Layer 4" width="56" height="31">
+  <data encoding="base64" compression="zlib">
+   eJzNV0tWBCEMZHpOM+pGb+Jnozfxcxl1LjWexswi7/HyCFQIga4NaRpCQSppOqV94HRM6ea43kcUHonXk8LtlvrvAN41H6vxTrw+FG7P1P8C8K75KGGmZr5pzI8y7pP6v5w+ShgR7xE+fmn+OUB3SLxb8bFqBvE5Cki8W/Gp+dD2gcQcrTle9MSHoe0D8ck1J3qf1pzOoe0D8ck1B62tV7R0PzovkH1oa3LNQWvrFS3dr/h+tta01NaW7mvvo2qeNb9r+djSS+19T2yR2mDNb0s+WlA653t6fiisddlS+ttiuFjy0YLSOb/S81thrQP1bcbagKKUj5H3Bek7f+65d/VwjayL0rd3rZ75njuI1bd3LW1+La6tGuXRr/Ttue/U5nt0sef/YoZHF5H6HQWPLixzcy2zLVttHGqvRK5ltmWrjUNtxox/QHmuuZbZlq02DrUZUXexHPJccy2zLVttHGozeu4/Vp2vrD3y/oNwt34LvN8zFKO4z4qHVSejuM+Kh1Une+KOwKqTPXFHMIvvPzuRfBc=
+  </data>
+ </layer>
+ <objectgroup name="Object Layer 2" width="56" height="31">
+  <object name="player" type="player" x="1908" y="736" width="51" height="81"/>
+ </objectgroup>
+</map>

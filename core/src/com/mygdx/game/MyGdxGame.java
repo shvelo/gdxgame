@@ -1,46 +1,120 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 public class MyGdxGame extends ApplicationAdapter {
-	ShapeRenderer shapeRenderer;
-	int x;
-	int y;
-	int width;
-	int height;
-	int radius = 40;
-	int xSpeed = 6;
-	int ySpeed = 6;
+	private TiledMap map;
+	private TiledMapRenderer renderer;
+	private OrthographicCamera camera;
+	private AssetManager assetManager;
+	private float w;
+	private float h;
+	private float tileW;
+	private float tileH;
+	float xSpeed = 0.05f;
+	float ySpeed = 0.05f;
+	float x;
+	float y;
+	int mapPixelWidth;
+	int mapPixelHeight;
+	int mapWidth;
+	int mapHeight;
 	
 	@Override
 	public void create () {
-		shapeRenderer = new ShapeRenderer();
-		x = radius + 5;
-		y = radius + 5;
+		w = Gdx.graphics.getWidth();
+		h = Gdx.graphics.getHeight();
+		tileW = w / 64f;
+		tileH = h / 64f;
+
+		x = tileW;
+		y = tileH;
+
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, w / 64f, h / 64f);
+		camera.zoom = 2;
+		camera.update();
+
+		assetManager = new AssetManager();
+		
+		map = loadMap();
+
+		renderer = new OrthogonalTiledMapRenderer(map, 1f / 64f);
 	}
 
 	@Override
 	public void render () {
-		width = Gdx.graphics.getWidth();
-		height = Gdx.graphics.getHeight();
+		Gdx.gl.glClearColor(100f / 255f, 100f / 255f, 250f / 255f, 1f);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		if(x >= width - radius || x <= radius) xSpeed = xSpeed * -1;
+		if(viewResized()) resetCamera();
 
-		if(y >= height - radius || y <= radius) ySpeed = ySpeed * -1;
+		calculateSpeed();
 
 		x += xSpeed;
 		y += ySpeed;
 
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.setColor(0, 1, 0, 1);
-		shapeRenderer.circle(x, y, radius);
-		shapeRenderer.end();
+		camera.position.x = x;
+		camera.position.y = y;
+		camera.update();
+
+		renderer.setView(camera);
+		renderer.render();
+	}
+
+	private void calculateSpeed() {
+		if( ((x >= mapWidth - tileW) && (xSpeed > 0)) || 
+			((x <= tileW) && (xSpeed < 0)) ) {
+			xSpeed = xSpeed * -1;
+		}
+		 
+		if( ((y >= mapHeight - tileH) && ySpeed > 0) || 
+			((y <= tileH) && (ySpeed < 0)) ) {
+			ySpeed = ySpeed * -1;
+		}
+	}
+
+	public boolean viewResized() {
+		return (w != Gdx.graphics.getWidth() || h != Gdx.graphics.getHeight());
+	}
+
+	public void resetCamera() {
+		System.out.println("Resetting camera");
+
+		w = Gdx.graphics.getWidth();
+		h = Gdx.graphics.getHeight();
+		tileW = w / 64f;
+		tileH = h / 64f;
+		camera.setToOrtho(false, tileW, tileH);
+	}
+
+	private TiledMap loadMap() {
+		assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+		assetManager.load("map.tmx", TiledMap.class);
+
+		assetManager.finishLoading();
+		map = assetManager.get("map.tmx");
+
+		MapProperties prop = map.getProperties();
+
+		mapWidth = prop.get("width", Integer.class);
+		mapHeight = prop.get("height", Integer.class);
+		int tilePixelWidth = prop.get("tilewidth", Integer.class);
+		int tilePixelHeight = prop.get("tileheight", Integer.class);
+
+		mapPixelWidth = mapWidth * tilePixelWidth;
+		mapPixelHeight = mapHeight * tilePixelHeight;
+
+		return map;
 	}
 }
