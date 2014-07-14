@@ -90,8 +90,6 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 
 	public void resetCamera() {
-		System.out.println("Resetting camera");
-
 		w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
 		tileW = w / tilePixelWidth;
