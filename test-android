@@ -1,4 +1,4 @@
 #!/bin/sh
 
-./gradlew build
+./gradlew assembleDebug
 adb install -r android/build/apk/android-debug-unaligned.apk
