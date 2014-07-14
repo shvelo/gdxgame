@@ -25,36 +25,37 @@ public class MyGdxGame extends ApplicationAdapter {
 	float ySpeed = 0.05f;
 	float x;
 	float y;
-	int mapPixelWidth;
-	int mapPixelHeight;
 	int mapWidth;
 	int mapHeight;
+	int tilePixelWidth;
+	int tilePixelHeight;
 	
 	@Override
 	public void create () {
 		w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
-		tileW = w / 64f;
-		tileH = h / 64f;
-
-		x = tileW;
-		y = tileH;
-
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, w / 64f, h / 64f);
-		camera.zoom = 2;
-		camera.update();
 
 		assetManager = new AssetManager();
 		
 		map = loadMap();
 
-		renderer = new OrthogonalTiledMapRenderer(map, 1f / 64f);
+		tileW = w / tilePixelWidth;
+		tileH = h / tilePixelHeight;
+
+		x = tileW;
+		y = tileH;
+
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, tileW, tileH);
+		camera.zoom = 2;
+		camera.update();
+
+		renderer = new OrthogonalTiledMapRenderer(map, 1f / tilePixelWidth);
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(100f / 255f, 100f / 255f, 250f / 255f, 1f);
+		Gdx.gl.glClearColor(0, 0, 0, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		if(viewResized()) resetCamera();
@@ -93,8 +94,8 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
-		tileW = w / 64f;
-		tileH = h / 64f;
+		tileW = w / tilePixelWidth;
+		tileH = h / tilePixelWidth;
 		camera.setToOrtho(false, tileW, tileH);
 	}
 
@@ -109,11 +110,8 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		mapWidth = prop.get("width", Integer.class);
 		mapHeight = prop.get("height", Integer.class);
-		int tilePixelWidth = prop.get("tilewidth", Integer.class);
-		int tilePixelHeight = prop.get("tileheight", Integer.class);
-
-		mapPixelWidth = mapWidth * tilePixelWidth;
-		mapPixelHeight = mapHeight * tilePixelHeight;
+		tilePixelWidth = prop.get("tilewidth", Integer.class);
+		tilePixelHeight = prop.get("tileheight", Integer.class);
 
 		return map;
 	}
