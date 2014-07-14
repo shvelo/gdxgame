@@ -1,4 +1,5 @@
-gdxgame
-=======
+# LibGDX Game
 
-My first LibGDX Hello World app: Bouncy ball without physics.
+Trying to make a game with LibGDX
+
+Assets by [Kenney](http://kenney.nl)
