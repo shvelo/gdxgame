@@ -21,7 +21,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private float h;
 	private float tileW;
 	private float tileH;
-	float xSpeed = 0.05f;
+	float xSpeed = 0.1f;
 	float ySpeed = 0.05f;
 	float x;
 	float y;
@@ -47,7 +47,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, tileW, tileH);
-		camera.zoom = 2;
+		camera.zoom = 1;
 		camera.update();
 
 		renderer = new OrthogonalTiledMapRenderer(map, 1f / tilePixelWidth);
