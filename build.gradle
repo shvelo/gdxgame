@@ -5,8 +5,12 @@ buildscript {
         maven { url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.+'
+        classpath 'com.android.tools.build:gradle:0.13.+'
     }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.1'
 }
 
 allprojects {
@@ -16,8 +20,8 @@ allprojects {
     version = '1.0'
     ext {
         appName = 'my-gdx-game'
-        gdxVersion = '1.2.0'
-        roboVMVersion = '0.0.12'
+        gdxVersion = '1.4.1'
+        roboVMVersion = '1.0.0'
     }
 
     repositories {
@@ -43,7 +47,7 @@ project(":desktop") {
 }
 
 project(":android") {
-    apply plugin: "android"
+    apply plugin: "com.android.application"
 
     configurations { natives }
 

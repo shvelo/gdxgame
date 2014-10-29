@@ -1,6 +1,6 @@
 android {
-    buildToolsVersion "19.1"
-    compileSdkVersion 19
+    buildToolsVersion "21.0.2"
+    compileSdkVersion 21
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -13,6 +13,10 @@ android {
         }
 
         instrumentTest.setRoot('tests')
+    }
+    
+    lintOptions {
+        abortOnError false
     }
 }
 
