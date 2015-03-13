@@ -5,12 +5,12 @@ buildscript {
         maven { url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.1'
+        classpath 'com.android.tools.build:gradle:0.13.+'
     }
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.3'
+    gradleVersion = '2.1'
 }
 
 allprojects {
@@ -20,7 +20,7 @@ allprojects {
     version = '1.0'
     ext {
         appName = 'my-gdx-game'
-        gdxVersion = '1.5.4'
+        gdxVersion = '1.4.1'
         roboVMVersion = '1.0.0'
     }
 
@@ -69,6 +69,7 @@ project(":android") {
 
 project(":core") {
     apply plugin: "java"
+
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
