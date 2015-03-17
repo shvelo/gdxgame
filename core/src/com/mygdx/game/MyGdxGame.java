@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
@@ -55,6 +56,9 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	@Override
 	public void render () {
+        // Exit on Escape key
+        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
+
 		Gdx.gl.glClearColor(0, 0, 0, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -83,6 +87,9 @@ public class MyGdxGame extends ApplicationAdapter {
 			((y <= tileH) && (ySpeed < 0)) ) {
 			ySpeed = ySpeed * -1;
 		}
+
+        if(w >= mapWidth) xSpeed = 0;
+        if(h >= mapHeight) ySpeed = 0;
 	}
 
 	public boolean viewResized() {
