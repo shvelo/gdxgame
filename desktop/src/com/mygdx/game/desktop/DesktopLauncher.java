@@ -1,5 +1,6 @@
 package com.mygdx.game.desktop;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.mygdx.game.MyGdxGame;
@@ -16,6 +17,11 @@ public class DesktopLauncher {
 		config.y = -1;
 		config.width = (int) screenSize.getWidth();
 		config.height = (int) screenSize.getHeight();
+
+        config.addIcon("icon_128.png", Files.FileType.Internal);
+        config.addIcon("icon_32.png", Files.FileType.Internal);
+        config.addIcon("icon_16.png", Files.FileType.Internal);
+
 		new LwjglApplication(new MyGdxGame(), config);
 	}
 }

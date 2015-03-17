@@ -17,13 +17,15 @@ public class MyGdxGame extends ApplicationAdapter {
 	private TiledMap map;
 	private TiledMapRenderer renderer;
 	private OrthographicCamera camera;
-	private AssetManager assetManager;
+	private final AssetManager assetManager = new AssetManager();
 	private float w;
 	private float h;
 	private float tileW;
 	private float tileH;
+    private boolean stopX = false;
+    private boolean stopY = false;
 	float xSpeed = 0.1f;
-	float ySpeed = 0.05f;
+	float ySpeed = 0.1f;
 	float x;
 	float y;
 	int mapWidth;
@@ -35,8 +37,6 @@ public class MyGdxGame extends ApplicationAdapter {
 	public void create () {
 		w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
-
-		assetManager = new AssetManager();
 		
 		map = loadMap();
 
@@ -66,8 +66,8 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		calculateSpeed();
 
-		x += xSpeed;
-		y += ySpeed;
+		if(!stopX) x += xSpeed;
+        if(!stopY) y += ySpeed;
 
 		camera.position.x = x;
 		camera.position.y = y;
@@ -78,18 +78,18 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 
 	private void calculateSpeed() {
-		if( ((x >= mapWidth - tileW) && (xSpeed > 0)) || 
+		if( ((x >= mapWidth - tileW) && (xSpeed > 0)) ||
 			((x <= tileW) && (xSpeed < 0)) ) {
 			xSpeed = xSpeed * -1;
 		}
 		 
-		if( ((y >= mapHeight - tileH) && ySpeed > 0) || 
+		if( ((y >= mapHeight - tileH) && ySpeed > 0) ||
 			((y <= tileH) && (ySpeed < 0)) ) {
 			ySpeed = ySpeed * -1;
 		}
 
-        if(w >= mapWidth) xSpeed = 0;
-        if(h >= mapHeight) ySpeed = 0;
+        stopX = w*2 >= mapWidth * tilePixelWidth;
+        stopY = h*2 >= mapHeight * tilePixelHeight;
 	}
 
 	public boolean viewResized() {
