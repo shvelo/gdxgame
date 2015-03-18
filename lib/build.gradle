@@ -1,0 +1,8 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = "com.mygdx.tools.TexturePackerGui"
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}

@@ -78,6 +78,18 @@ project(":core") {
     }
 }
 
+project(":lib") {
+    apply plugin: "java"
+
+    dependencies {
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+        compile "org.apache.pivot:pivot:2.0.4"
+        compile "org.apache.pivot:pivot-wtk:2.0.4"
+        compile "org.apache.pivot:pivot-wtk-terra:2.0.4"
+    }
+}
+
 tasks.eclipse.doLast {
     delete ".project"
 }

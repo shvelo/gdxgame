@@ -1,0 +1,5 @@
+<Window title="TexturePacker" xmlns:bxml="http://pivot.apache.org/bxml" maximized="true" xmlns="org.apache.pivot.wtk">
+    <Label text="Not implemented"
+        styles="{font:'Arial bold 24', color:'#ff0000',
+                        horizontalAlignment:'center', verticalAlignment:'center'}"/>
+</Window>
