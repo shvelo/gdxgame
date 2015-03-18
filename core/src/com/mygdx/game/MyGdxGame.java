@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Input;
@@ -7,11 +8,17 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 public class MyGdxGame extends ApplicationAdapter {
 	private TiledMap map;
@@ -32,8 +39,10 @@ public class MyGdxGame extends ApplicationAdapter {
 	int mapHeight;
 	int tilePixelWidth;
 	int tilePixelHeight;
-	
-	@Override
+    private Stage stage;
+    private Table table;
+
+    @Override
 	public void create () {
 		w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
@@ -52,6 +61,24 @@ public class MyGdxGame extends ApplicationAdapter {
 		camera.update();
 
 		renderer = new OrthogonalTiledMapRenderer(map, 1f / tilePixelWidth);
+
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+
+        table = new Table();
+        table.setFillParent(true);
+        stage.addActor(table);
+
+        Skin uiSkin = new Skin();
+        uiSkin.addRegions(new TextureAtlas("data/uiskin.atlas"));
+        uiSkin.load(Gdx.files.getFileHandle("data/uiskin.json", Files.FileType.Internal));
+
+        table.center();
+        table.add(new TextButton("Start", uiSkin)).width(100).spaceBottom(10);
+        table.row();
+        table.add(new TextButton("Options", uiSkin)).width(100).spaceBottom(10);
+        table.row();
+        table.add(new TextButton("Exit", uiSkin)).width(100).spaceBottom(10);
 	}
 
 	@Override
@@ -61,8 +88,6 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		Gdx.gl.glClearColor(0, 0, 0, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		if(viewResized()) resetCamera();
 
 		calculateSpeed();
 
@@ -75,7 +100,22 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		renderer.setView(camera);
 		renderer.render();
+
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
 	}
+
+    @Override
+    public void resize(int width, int height) {
+        resetCamera();
+        stage.getViewport().update(width, height, true);
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
+        map.dispose();
+    }
 
 	private void calculateSpeed() {
 		if( ((x >= mapWidth - tileW) && (xSpeed > 0)) ||
@@ -90,10 +130,6 @@ public class MyGdxGame extends ApplicationAdapter {
 
         stopX = w*2 >= mapWidth * tilePixelWidth;
         stopY = h*2 >= mapHeight * tilePixelHeight;
-	}
-
-	public boolean viewResized() {
-		return (w != Gdx.graphics.getWidth() || h != Gdx.graphics.getHeight());
 	}
 
 	public void resetCamera() {
