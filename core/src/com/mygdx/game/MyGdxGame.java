@@ -1,9 +1,9 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -13,7 +13,7 @@ import com.mygdx.game.stages.OptionsStage;
 
 import java.util.HashMap;
 
-public class MyGdxGame extends ApplicationAdapter {
+public class MyGdxGame extends Game {
     private Stage stage;
     private PanningMap panningMap;
     private HashMap<String, Stage> stages = new HashMap<>();
@@ -21,10 +21,13 @@ public class MyGdxGame extends ApplicationAdapter {
     public boolean started = false;
     private int w;
     private int h;
+    public SpriteBatch batch;
 
     @Override
 	public void create () {
-		w = Gdx.graphics.getWidth();
+        batch = new SpriteBatch();
+
+        w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
 
         uiSkin = new Skin();
@@ -36,11 +39,13 @@ public class MyGdxGame extends ApplicationAdapter {
         stages.put("options", new OptionsStage(this));
         stages.put("game", new GameStage(this));
 
-        panningMap = new PanningMap();
+        panningMap = new PanningMap(this);
 
         Gdx.input.setCatchBackKey(true);
 
         setStage("main");
+
+        setScreen(panningMap);
 	}
 
     public void setStage(String stageName) {
@@ -53,11 +58,8 @@ public class MyGdxGame extends ApplicationAdapter {
     }
 
 	@Override
-	public void render () {
-		Gdx.gl.glClearColor(0, 0, 0, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        panningMap.draw();
+	public void render() {
+        super.render();
 
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
@@ -65,14 +67,15 @@ public class MyGdxGame extends ApplicationAdapter {
 
     @Override
     public void resize(int width, int height) {
+        super.resize(width, height);
         w = width;
         h = height;
-        panningMap.resetCamera();
         stage.getViewport().update(width, height, true);
     }
 
     @Override
     public void dispose() {
+        super.dispose();
         stage.dispose();
         stages.clear();
         panningMap.dispose();
