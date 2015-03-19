@@ -27,8 +27,8 @@ public class PanningMap implements Screen {
     private Integer mapHeight;
     private boolean stopX = false;
     private boolean stopY = false;
-    private float xSpeed = 0.2f;
-    private float ySpeed = 0.2f;
+    private float xSpeed = 0.1f;
+    private float ySpeed = 0.1f;
     private float x;
     private float y;
 
