@@ -104,4 +104,9 @@ public class PanningMap {
 
         return map;
     }
+
+    public void dispose() {
+        renderer.dispose();
+        map.dispose();
+    }
 }

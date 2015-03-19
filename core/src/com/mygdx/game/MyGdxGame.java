@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 public class MyGdxGame extends ApplicationAdapter {
     private Stage stage;
-    private PanningMap backgroundStage;
+    private PanningMap panningMap;
     private HashMap<String, Stage> stages = new HashMap<>();
     public Skin uiSkin;
     public boolean started = false;
@@ -36,7 +36,7 @@ public class MyGdxGame extends ApplicationAdapter {
         stages.put("options", new OptionsStage(this));
         stages.put("game", new GameStage(this));
 
-        backgroundStage = new PanningMap();
+        panningMap = new PanningMap();
 
         Gdx.input.setCatchBackKey(true);
 
@@ -57,7 +57,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        backgroundStage.draw();
+        panningMap.draw();
 
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
@@ -67,7 +67,7 @@ public class MyGdxGame extends ApplicationAdapter {
     public void resize(int width, int height) {
         w = width;
         h = height;
-        backgroundStage.resetCamera();
+        panningMap.resetCamera();
         stage.getViewport().update(width, height, true);
     }
 
@@ -75,5 +75,6 @@ public class MyGdxGame extends ApplicationAdapter {
     public void dispose() {
         stage.dispose();
         stages.clear();
+        panningMap.dispose();
     }
 }
