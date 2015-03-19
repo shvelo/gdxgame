@@ -8,21 +8,15 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import java.util.HashMap;
 
 public class MyGdxGame extends ApplicationAdapter {
 	private TiledMap map;
@@ -44,7 +38,9 @@ public class MyGdxGame extends ApplicationAdapter {
 	int tilePixelWidth;
 	int tilePixelHeight;
     private Stage stage;
-    private Table table;
+    private HashMap<String, Stage> stages = new HashMap<>();
+    public Skin uiSkin;
+    public boolean started = false;
 
     @Override
 	public void create () {
@@ -66,41 +62,32 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		renderer = new OrthogonalTiledMapRenderer(map, 1f / tilePixelWidth);
 
-        stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
-
-        table = new Table();
-        table.setFillParent(true);
-        stage.addActor(table);
-
-        Skin uiSkin = new Skin();
+        uiSkin = new Skin();
         uiSkin.addRegions(new TextureAtlas("data/uiskin.atlas"));
         uiSkin.addRegions(new TextureAtlas("data/yellow.atlas"));
         uiSkin.load(Gdx.files.getFileHandle("data/uiskin.json", Files.FileType.Internal));
 
-        TextButton startButton = new TextButton("Start", uiSkin);
-        TextButton optionsButton = new TextButton("Options", uiSkin);
-        TextButton exitButton = new TextButton("Exit", uiSkin);
+        stages.put("main", new MainStage(this));
+        stages.put("options", new OptionsStage(this));
+        stages.put("game", new Stage());
 
-        exitButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
-            }
-        });
-
-        table.center();
-        table.add(new Image(new Texture("logo.png"))).spaceBottom(20);
-        table.row();
-        table.add(startButton).width(200).spaceBottom(10);
-        table.row();
-        table.add(optionsButton).width(200).spaceBottom(10);
-        table.row();
-        table.add(exitButton).width(200).spaceBottom(10);
+        setStage("main");
 	}
+
+    public void setStage(String stageName) {
+        Stage newStage = stages.get(stageName);
+        if(newStage != null) {
+            stage = newStage;
+            Gdx.input.setInputProcessor(newStage);
+        }
+    }
 
 	@Override
 	public void render () {
+        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+            setStage("main");
+        }
+
 		Gdx.gl.glClearColor(0, 0, 0, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
