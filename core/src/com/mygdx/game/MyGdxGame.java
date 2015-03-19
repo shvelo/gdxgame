@@ -8,6 +8,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -88,6 +90,8 @@ public class MyGdxGame extends ApplicationAdapter {
         });
 
         table.center();
+        table.add(new Image(new Texture("logo.png"))).spaceBottom(20);
+        table.row();
         table.add(startButton).width(200).spaceBottom(10);
         table.row();
         table.add(optionsButton).width(200).spaceBottom(10);
@@ -97,9 +101,6 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-        // Exit on Escape key
-        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
-
 		Gdx.gl.glClearColor(0, 0, 0, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
