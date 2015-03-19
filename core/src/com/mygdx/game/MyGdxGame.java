@@ -69,7 +69,9 @@ public class MyGdxGame extends ApplicationAdapter {
 
         stages.put("main", new MainStage(this));
         stages.put("options", new OptionsStage(this));
-        stages.put("game", new Stage());
+        stages.put("game", new GameStage(this));
+
+        Gdx.input.setCatchBackKey(true);
 
         setStage("main");
 	}
@@ -79,15 +81,12 @@ public class MyGdxGame extends ApplicationAdapter {
         if(newStage != null) {
             stage = newStage;
             Gdx.input.setInputProcessor(newStage);
+            stage.getViewport().update((int)w, (int)h, true);
         }
     }
 
 	@Override
 	public void render () {
-        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            setStage("main");
-        }
-
 		Gdx.gl.glClearColor(0, 0, 0, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -116,6 +115,7 @@ public class MyGdxGame extends ApplicationAdapter {
     @Override
     public void dispose() {
         stage.dispose();
+        stages.clear();
         map.dispose();
     }
 

@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class MainStage extends Stage {
     private final Table table;
@@ -19,7 +20,7 @@ public class MainStage extends Stage {
     private TextButton startButton;
 
     public MainStage(MyGdxGame newContext) {
-        super();
+        super(new ScreenViewport());
 
         context = newContext;
 
@@ -58,11 +59,11 @@ public class MainStage extends Stage {
         table.center();
         table.add(new Image(new Texture("logo.png"))).spaceBottom(20);
         table.row();
-        table.add(startButton).width(200).spaceBottom(10);
+        table.add(startButton).prefWidth(250).spaceBottom(10);
         table.row();
-        table.add(optionsButton).width(200).spaceBottom(10);
+        table.add(optionsButton).prefWidth(250).spaceBottom(10);
         table.row();
-        table.add(exitButton).width(200).spaceBottom(10);
+        table.add(exitButton).prefWidth(250).spaceBottom(10);
     }
 
     @Override

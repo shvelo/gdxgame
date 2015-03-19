@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -9,14 +10,27 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class OptionsStage extends Stage {
     private final Table table;
     private final Skin uiSkin;
     private final MyGdxGame context;
 
+    @Override
+    public boolean keyDown(int keyCode) {
+        switch(keyCode) {
+            case Input.Keys.ESCAPE:
+            case Input.Keys.BACK:
+                context.setStage("main");
+                return true;
+            default:
+                return super.keyDown(keyCode);
+        }
+    }
+
     public OptionsStage(MyGdxGame newContext) {
-        super();
+        super(new ScreenViewport());
 
         context = newContext;
 
