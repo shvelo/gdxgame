@@ -78,7 +78,7 @@ project(":core") {
     }
 }
 
-project(":lib") {
+project(":tools") {
     apply plugin: "java"
 
     dependencies {

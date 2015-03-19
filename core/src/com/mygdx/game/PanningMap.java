@@ -66,7 +66,10 @@ public class PanningMap implements Screen {
 
     public PanningMap(MyGdxGame gam) {
         game = gam;
+    }
 
+    @Override
+    public void show() {
         assetManager = new AssetManager();
 
         w = Gdx.graphics.getWidth();
@@ -86,11 +89,6 @@ public class PanningMap implements Screen {
         camera.update();
 
         renderer = new OrthogonalTiledMapRenderer(map, 1f / tilePixelWidth);
-    }
-
-    @Override
-    public void show() {
-
     }
 
     @Override
