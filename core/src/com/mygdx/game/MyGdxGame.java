@@ -3,64 +3,29 @@ package com.mygdx.game;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.mygdx.game.stages.GameStage;
+import com.mygdx.game.stages.MainStage;
+import com.mygdx.game.stages.OptionsStage;
+
 import java.util.HashMap;
 
 public class MyGdxGame extends ApplicationAdapter {
-	private TiledMap map;
-	private TiledMapRenderer renderer;
-	private OrthographicCamera camera;
-	private final AssetManager assetManager = new AssetManager();
-	private float w;
-	private float h;
-	private float tileW;
-	private float tileH;
-    private boolean stopX = false;
-    private boolean stopY = false;
-	float xSpeed = 0.1f;
-	float ySpeed = 0.1f;
-	float x;
-	float y;
-	int mapWidth;
-	int mapHeight;
-	int tilePixelWidth;
-	int tilePixelHeight;
     private Stage stage;
+    private PanningMap backgroundStage;
     private HashMap<String, Stage> stages = new HashMap<>();
     public Skin uiSkin;
     public boolean started = false;
+    private int w;
+    private int h;
 
     @Override
 	public void create () {
 		w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
-		
-		map = loadMap();
-
-		tileW = w / tilePixelWidth;
-		tileH = h / tilePixelHeight;
-
-		x = tileW;
-		y = tileH;
-
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, tileW, tileH);
-		camera.zoom = 1;
-		camera.update();
-
-		renderer = new OrthogonalTiledMapRenderer(map, 1f / tilePixelWidth);
 
         uiSkin = new Skin();
         uiSkin.addRegions(new TextureAtlas("data/uiskin.atlas"));
@@ -70,6 +35,8 @@ public class MyGdxGame extends ApplicationAdapter {
         stages.put("main", new MainStage(this));
         stages.put("options", new OptionsStage(this));
         stages.put("game", new GameStage(this));
+
+        backgroundStage = new PanningMap();
 
         Gdx.input.setCatchBackKey(true);
 
@@ -81,7 +48,7 @@ public class MyGdxGame extends ApplicationAdapter {
         if(newStage != null) {
             stage = newStage;
             Gdx.input.setInputProcessor(newStage);
-            stage.getViewport().update((int)w, (int)h, true);
+            stage.getViewport().update(w, h, true);
         }
     }
 
@@ -90,17 +57,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		calculateSpeed();
-
-		if(!stopX) x += xSpeed;
-        if(!stopY) y += ySpeed;
-
-		camera.position.x = x;
-		camera.position.y = y;
-		camera.update();
-
-		renderer.setView(camera);
-		renderer.render();
+        backgroundStage.draw();
 
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
@@ -108,7 +65,9 @@ public class MyGdxGame extends ApplicationAdapter {
 
     @Override
     public void resize(int width, int height) {
-        resetCamera();
+        w = width;
+        h = height;
+        backgroundStage.resetCamera();
         stage.getViewport().update(width, height, true);
     }
 
@@ -116,46 +75,5 @@ public class MyGdxGame extends ApplicationAdapter {
     public void dispose() {
         stage.dispose();
         stages.clear();
-        map.dispose();
     }
-
-	private void calculateSpeed() {
-		if( ((x >= mapWidth - tileW) && (xSpeed > 0)) ||
-			((x <= tileW) && (xSpeed < 0)) ) {
-			xSpeed = xSpeed * -1;
-		}
-		 
-		if( ((y >= mapHeight - tileH) && ySpeed > 0) ||
-			((y <= tileH) && (ySpeed < 0)) ) {
-			ySpeed = ySpeed * -1;
-		}
-
-        stopX = w*2 >= mapWidth * tilePixelWidth;
-        stopY = h*2 >= mapHeight * tilePixelHeight;
-	}
-
-	public void resetCamera() {
-		w = Gdx.graphics.getWidth();
-		h = Gdx.graphics.getHeight();
-		tileW = w / tilePixelWidth;
-		tileH = h / tilePixelWidth;
-		camera.setToOrtho(false, tileW, tileH);
-	}
-
-	private TiledMap loadMap() {
-		assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-		assetManager.load("map.tmx", TiledMap.class);
-
-		assetManager.finishLoading();
-		map = assetManager.get("map.tmx");
-
-		MapProperties prop = map.getProperties();
-
-		mapWidth = prop.get("width", Integer.class);
-		mapHeight = prop.get("height", Integer.class);
-		tilePixelWidth = prop.get("tilewidth", Integer.class);
-		tilePixelHeight = prop.get("tileheight", Integer.class);
-
-		return map;
-	}
 }
