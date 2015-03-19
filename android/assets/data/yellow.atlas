@@ -1,0 +1,54 @@
+
+yellow.png
+size: 512,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+yellow-round
+  rotate: false
+  xy: 2, 53
+  size: 190, 49
+  split: 7, 7, 7, 10
+  pad: 4, 4, 4, 9
+  orig: 190, 49
+  offset: 0, 0
+  index: -1
+yellow-round-down
+  rotate: false
+  xy: 2, 6
+  size: 190, 45
+  split: 63, 63, 15, 15
+  pad: 0, 0, 0, 0
+  orig: 190, 45
+  offset: 0, 0
+  index: -1
+yellow_boxCheckmark
+  rotate: false
+  xy: 296, 66
+  size: 38, 36
+  orig: 38, 36
+  offset: 0, 0
+  index: -1
+yellow_boxCross
+  rotate: false
+  xy: 296, 28
+  size: 38, 36
+  orig: 38, 36
+  offset: 0, 0
+  index: -1
+yellow_panel
+  rotate: false
+  xy: 194, 2
+  size: 100, 100
+  split: 8, 8, 8, 7
+  pad: 5, 5, 5, 5
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+yellow_sliderUp
+  rotate: false
+  xy: 336, 60
+  size: 28, 42
+  orig: 28, 42
+  offset: 0, 0
+  index: -1

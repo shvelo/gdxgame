@@ -15,10 +15,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class MyGdxGame extends ApplicationAdapter {
 	private TiledMap map;
@@ -71,14 +73,26 @@ public class MyGdxGame extends ApplicationAdapter {
 
         Skin uiSkin = new Skin();
         uiSkin.addRegions(new TextureAtlas("data/uiskin.atlas"));
+        uiSkin.addRegions(new TextureAtlas("data/yellow.atlas"));
         uiSkin.load(Gdx.files.getFileHandle("data/uiskin.json", Files.FileType.Internal));
 
+        TextButton startButton = new TextButton("Start", uiSkin);
+        TextButton optionsButton = new TextButton("Options", uiSkin);
+        TextButton exitButton = new TextButton("Exit", uiSkin);
+
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
+
         table.center();
-        table.add(new TextButton("Start", uiSkin)).width(100).spaceBottom(10);
+        table.add(startButton).width(200).spaceBottom(10);
         table.row();
-        table.add(new TextButton("Options", uiSkin)).width(100).spaceBottom(10);
+        table.add(optionsButton).width(200).spaceBottom(10);
         table.row();
-        table.add(new TextButton("Exit", uiSkin)).width(100).spaceBottom(10);
+        table.add(exitButton).width(200).spaceBottom(10);
 	}
 
 	@Override

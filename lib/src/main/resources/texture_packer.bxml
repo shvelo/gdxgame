@@ -1,5 +1,14 @@
-<Window title="TexturePacker" xmlns:bxml="http://pivot.apache.org/bxml" maximized="true" xmlns="org.apache.pivot.wtk">
-    <Label text="Not implemented"
-        styles="{font:'Arial bold 24', color:'#ff0000',
-                        horizontalAlignment:'center', verticalAlignment:'center'}"/>
-</Window>
+<texturepackergui:TexturePackerGuiWindow title="TexturePacker" xmlns:texturepackergui="com.mygdx.tools" xmlns:bxml="http://pivot.apache.org/bxml" maximized="true" xmlns="org.apache.pivot.wtk">
+    <BoxPane orientation="vertical" styles="{padding:4, verticalAlignment:'center', horizontalAlignment: 'center'}">
+        <FlowPane>
+            <TextInput prompt="Input dir" textSize="24" bxml:id="inputDir"/>
+            <PushButton buttonData="select" bxml:id="selectInputDir"/>
+        </FlowPane>
+        <FlowPane>
+            <TextInput prompt="Output dir" textSize="24" bxml:id="outputDir"/>
+            <PushButton buttonData="select" bxml:id="selectOutputDir"/>
+        </FlowPane>
+        <TextInput prompt="Pack file name" textSize="24" bxml:id="outFileName"/>
+        <PushButton buttonData="Process" bxml:id="process"/>
+    </BoxPane>
+</texturepackergui:TexturePackerGuiWindow>
