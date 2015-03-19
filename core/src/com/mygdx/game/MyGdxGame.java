@@ -14,6 +14,9 @@ import com.mygdx.game.stages.OptionsStage;
 
 import java.util.HashMap;
 
+/**
+ * Main game class
+ */
 public class MyGdxGame extends Game {
     private Stage stage;
     private PanningMap panningMap;
@@ -49,6 +52,10 @@ public class MyGdxGame extends Game {
         setScreen(panningMap);
 	}
 
+    /**
+     * Set Scene2D UI stage
+     * @param stageName Stage name in stages
+     */
     public void setStage(String stageName) {
         Stage newStage = stages.get(stageName);
         if(newStage != null) {
