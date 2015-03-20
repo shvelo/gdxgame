@@ -64,7 +64,7 @@ public class PanningMap implements Screen {
     private void calculateSpeed() {
         boolean moving = false;
 
-        if(Gdx.input.isKeyPressed(Input.Keys.UP) && checkCollision(x, y+8)) {
+        if(Gdx.input.isKeyPressed(Input.Keys.UP) && checkCollision(x, y+2)) {
             ySpeed = 1;
             moving = true;
             walkAnimation = walkAnimations.get("up");
@@ -76,11 +76,11 @@ public class PanningMap implements Screen {
             ySpeed = 0;
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && checkCollision(x-8, y)) {
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && checkCollision(x-6, y)) {
             xSpeed = -1;
             walkAnimation = walkAnimations.get("left");
             moving = true;
-        } else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && checkCollision(x+8, y)) {
+        } else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && checkCollision(x+6, y)) {
             xSpeed = 1;
             walkAnimation = walkAnimations.get("right");
             moving = true;
