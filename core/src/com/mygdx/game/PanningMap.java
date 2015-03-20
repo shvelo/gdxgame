@@ -16,6 +16,7 @@ import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
@@ -46,28 +47,28 @@ public class PanningMap implements Screen {
     private float ySpeed = 1;
     private float x;
     private float y;
-    private MapObjects collisionObjects;
     private RectangleMapObject player;
     private Animation walkAnimation;
     private float stateTime = 0f;
     private TextureRegion currentFrame;
     private HashMap<String, Animation> walkAnimations;
 
-    private boolean checkCollision(Rectangle rect) {
-        for(MapObject obj: collisionObjects) {
-            if(Intersector.overlaps(rect, ((RectangleMapObject)obj).getRectangle())) return true;
+    private boolean checkCollision(float x, float y) {
+        if(((TiledMapTileLayer)map.getLayers().get("collision")).getCell( (int)Math.floor(x / tilePixelWidth), (int)Math.floor(y / tilePixelHeight)) != null) {
+            return false;
+        } else {
+            return true;
         }
-        return false;
     }
 
     private void calculateSpeed() {
         boolean moving = false;
 
-        if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        if(Gdx.input.isKeyPressed(Input.Keys.UP) && checkCollision(x, y+8)) {
             ySpeed = 1;
             moving = true;
             walkAnimation = walkAnimations.get("up");
-        } else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        } else if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && checkCollision(x, y-8)) {
             ySpeed = -1;
             moving = true;
             walkAnimation = walkAnimations.get("down");
@@ -75,11 +76,11 @@ public class PanningMap implements Screen {
             ySpeed = 0;
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && checkCollision(x-8, y)) {
             xSpeed = -1;
             walkAnimation = walkAnimations.get("left");
             moving = true;
-        } else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        } else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && checkCollision(x+8, y)) {
             xSpeed = 1;
             walkAnimation = walkAnimations.get("right");
             moving = true;
@@ -107,8 +108,6 @@ public class PanningMap implements Screen {
         player = (RectangleMapObject)map.getLayers().get("objects").getObjects().get("player");
         x = player.getRectangle().getX();
         y = player.getRectangle().getY();
-        
-        collisionObjects = map.getLayers().get("collision").getObjects();
 
         return map;
     }
@@ -177,16 +176,16 @@ public class PanningMap implements Screen {
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = walkAnimation.getKeyFrame(stateTime, true);
 
-        renderer.render(new int[]{0, 1});
+        renderer.render(new int[]{0, 1, 2, 3});
         game.batch.begin();
         game.batch.draw(currentFrame, w / 2 - 32, h / 2 - 32);
         game.batch.end();
-        renderer.render(new int[]{2, 3, 4, 5});
+        renderer.render(new int[]{4, 5, 6});
 
         calculateSpeed();
 
         if(!stopX) x += xSpeed * xSpeedM;
-        if(!stopY) y += ySpeed * xSpeedM;
+        if(!stopY) y += ySpeed * ySpeedM;
 
         camera.position.x = x/4;
         camera.position.y = y/4;
