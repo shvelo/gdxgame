@@ -1,15 +1,28 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PanningMap implements Screen {
     private final MyGdxGame game;
@@ -27,24 +40,54 @@ public class PanningMap implements Screen {
     private Integer mapHeight;
     private boolean stopX = false;
     private boolean stopY = false;
-    private float xSpeed = 0.1f;
-    private float ySpeed = 0.1f;
+    private float xSpeedM = 2f;
+    private float ySpeedM = 2f;
+    private float xSpeed = 1;
+    private float ySpeed = 1;
     private float x;
     private float y;
+    private MapObjects collisionObjects;
+    private RectangleMapObject player;
+    private Animation walkAnimation;
+    private float stateTime = 0f;
+    private TextureRegion currentFrame;
+    private HashMap<String, Animation> walkAnimations;
+
+    private boolean checkCollision(Rectangle rect) {
+        for(MapObject obj: collisionObjects) {
+            if(Intersector.overlaps(rect, ((RectangleMapObject)obj).getRectangle())) return true;
+        }
+        return false;
+    }
 
     private void calculateSpeed() {
-        if( ((x >= mapWidth - tileW) && (xSpeed > 0)) ||
-                ((x <= tileW) && (xSpeed < 0)) ) {
-            xSpeed = xSpeed * -1;
+        boolean moving = false;
+
+        if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            ySpeed = 1;
+            moving = true;
+            walkAnimation = walkAnimations.get("up");
+        } else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            ySpeed = -1;
+            moving = true;
+            walkAnimation = walkAnimations.get("down");
+        } else {
+            ySpeed = 0;
         }
 
-        if( ((y >= mapHeight - tileH) && ySpeed > 0) ||
-                ((y <= tileH) && (ySpeed < 0)) ) {
-            ySpeed = ySpeed * -1;
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            xSpeed = -1;
+            walkAnimation = walkAnimations.get("left");
+            moving = true;
+        } else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            xSpeed = 1;
+            walkAnimation = walkAnimations.get("right");
+            moving = true;
+        } else {
+            xSpeed = 0;
         }
 
-        stopX = w*2 >= mapWidth * tilePixelWidth;
-        stopY = h*2 >= mapHeight * tilePixelHeight;
+        if(!moving) walkAnimation = walkAnimations.get("stand");
     }
 
     private TiledMap loadMap() {
@@ -61,7 +104,42 @@ public class PanningMap implements Screen {
         tilePixelWidth = prop.get("tilewidth", Integer.class);
         tilePixelHeight = prop.get("tileheight", Integer.class);
 
+        player = (RectangleMapObject)map.getLayers().get("objects").getObjects().get("player");
+        x = player.getRectangle().getX();
+        y = player.getRectangle().getY();
+        
+        collisionObjects = map.getLayers().get("collision").getObjects();
+
         return map;
+    }
+
+    private void loadCharacter() {
+        walkAnimations = new HashMap<String, Animation>();
+        Texture characterSheet = new Texture("character.png"); //13x21
+        TextureRegion[][] tmp = TextureRegion.split(characterSheet, 64, 64);
+        TextureRegion[] walkFramesUp = new TextureRegion[8];
+        TextureRegion[] walkFramesLeft = new TextureRegion[8];
+        TextureRegion[] walkFramesRight = new TextureRegion[8];
+        TextureRegion[] walkFramesDown = new TextureRegion[8];
+
+        TextureRegion[] standFrames = new TextureRegion[1];
+
+        System.arraycopy(tmp[8], 0, walkFramesUp, 0, 8);
+        walkAnimations.put("up", new Animation(0.05f, walkFramesUp));
+
+        System.arraycopy(tmp[9], 0, walkFramesLeft, 0, 8);
+        walkAnimations.put("left", new Animation(0.05f, walkFramesLeft));
+
+        System.arraycopy(tmp[10], 0, walkFramesRight, 0, 8);
+        walkAnimations.put("down", new Animation(0.05f, walkFramesRight));
+
+        System.arraycopy(tmp[11], 0, walkFramesDown, 0, 8);
+        walkAnimations.put("right", new Animation(0.05f, walkFramesDown));
+
+        System.arraycopy(tmp[2], 0, standFrames, 0, 1);
+        walkAnimations.put("stand", new Animation(1f, standFrames));
+
+        walkAnimation = walkAnimations.get("stand");
     }
 
     public PanningMap(MyGdxGame gam) {
@@ -76,37 +154,42 @@ public class PanningMap implements Screen {
         h = Gdx.graphics.getHeight();
 
         map = loadMap();
+        loadCharacter();
 
         tileW = w / tilePixelWidth;
         tileH = h / tilePixelHeight;
-
-        x = tileW;
-        y = tileH;
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, tileW, tileH);
         camera.zoom = 1;
         camera.update();
 
-        renderer = new OrthogonalTiledMapRenderer(map, 1f / tilePixelWidth);
+        renderer = new OrthogonalTiledMapRenderer(map, 4f / tilePixelWidth);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1f);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        //game.batch.setProjectionMatrix(camera.combined);
+
+        stateTime += Gdx.graphics.getDeltaTime();
+        currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+
+        renderer.render(new int[]{0, 1});
         game.batch.begin();
-        renderer.render();
+        game.batch.draw(currentFrame, w / 2 - 32, h / 2 - 32);
         game.batch.end();
+        renderer.render(new int[]{2, 3, 4, 5});
 
         calculateSpeed();
 
-        if(!stopX) x += xSpeed;
-        if(!stopY) y += ySpeed;
+        if(!stopX) x += xSpeed * xSpeedM;
+        if(!stopY) y += ySpeed * xSpeedM;
 
-        camera.position.x = x;
-        camera.position.y = y;
+        camera.position.x = x/4;
+        camera.position.y = y/4;
         camera.update();
 
         renderer.setView(camera);
