@@ -61,6 +61,19 @@ public class PanningMap implements Screen {
         }
     }
 
+    private void checkTeleport() {
+        for(MapObject obj : map.getLayers().get("objects").getObjects()) {
+            if(obj.getProperties().get("type").equals("teleport")
+                    && Intersector.overlaps(
+                        new Rectangle(x, y, 1, 1),
+                        ((RectangleMapObject) obj).getRectangle())
+                    ) {
+
+                map = loadMap(obj.getName());
+            }
+        }
+    }
+
     private void calculateSpeed() {
         boolean moving = false;
 
@@ -91,12 +104,12 @@ public class PanningMap implements Screen {
         if(!moving) walkAnimation = walkAnimations.get("stand");
     }
 
-    private TiledMap loadMap() {
+    private TiledMap loadMap(String mapName) {
         assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-        assetManager.load("map.tmx", TiledMap.class);
+        assetManager.load(mapName, TiledMap.class);
 
         assetManager.finishLoading();
-        map = assetManager.get("map.tmx");
+        map = assetManager.get(mapName);
 
         MapProperties prop = map.getProperties();
 
@@ -108,6 +121,16 @@ public class PanningMap implements Screen {
         player = (RectangleMapObject)map.getLayers().get("objects").getObjects().get("player");
         x = player.getRectangle().getX();
         y = player.getRectangle().getY();
+
+        tileW = w / tilePixelWidth;
+        tileH = h / tilePixelHeight;
+
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, tileW, tileH);
+        camera.zoom = 1;
+        camera.update();
+
+        renderer = new OrthogonalTiledMapRenderer(map, 4f / tilePixelWidth);
 
         return map;
     }
@@ -152,18 +175,8 @@ public class PanningMap implements Screen {
         w = Gdx.graphics.getWidth();
         h = Gdx.graphics.getHeight();
 
-        map = loadMap();
+        map = loadMap("map.tmx");
         loadCharacter();
-
-        tileW = w / tilePixelWidth;
-        tileH = h / tilePixelHeight;
-
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, tileW, tileH);
-        camera.zoom = 1;
-        camera.update();
-
-        renderer = new OrthogonalTiledMapRenderer(map, 4f / tilePixelWidth);
     }
 
     @Override
@@ -181,6 +194,8 @@ public class PanningMap implements Screen {
         game.batch.draw(currentFrame, w / 2 - 32, h / 2 - 32);
         game.batch.end();
         renderer.render(new int[]{4, 5, 6});
+
+        checkTeleport();
 
         calculateSpeed();
 
