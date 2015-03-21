@@ -78,12 +78,12 @@
  </tileset>
  <layer name="terrain" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJzt17sJACAQBNFDMVGx/678NeQJNqDBYTDBsOGLdziRZtzUohcpwbZt4uLi4uLi4uLi4uLi/uYmf/+r+tn6+Muymgsfpmy/
+   eJxjYBgFo2AUjIJRQCy4xMTAcAEP5mMmTRwXvsyEai8XUP9vVtwYlzwhfdjUj9qLGzvikMclTi17qYVJtZcDhzwu8aEev8PNXm4C5Q4nVP4iE0T/eag4L4X2EgK08u+ovaP2jiR7uXHk36sktDVAmAdoDgBwHnxt
   </data>
  </layer>
  <layer name="overlay" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJztzUsKwCAMhOHZxMf9ab1V9UjWlTtLKFgK/8BAFkk+6bscJp2bWmy61z3XTW24uLi4uLi4uLi4uL9yY5CSs+OH92Y0B71KteedVTodP28V
+   eJztzbENACAMxMCvMi2wFbAVMAopM0CUyie5tgQAAADUaSb10LCa7/TPCm2+fBMc/9zQK/pm+eZwF4U=
   </data>
  </layer>
  <layer name="props" width="30" height="30">
@@ -108,7 +108,7 @@
  </layer>
  <layer name="collision" width="30" height="30" visible="0" opacity="0.39">
   <data encoding="base64" compression="zlib">
-   eJzt17ENAEAIAkDcf+nfQRPf4kgoydVUkvrU7XC5XC6Xy+VyuVzuVbf7qSb7Bz6FAHQ=
+   eJxjZGBgYBwgTG8wau+ovaP2jtpLqb3L2OiDsdmLD+CSJ6SPGP+O2jvw9lILDBX/jtpLPXuJxejqKbGXEKCVf0ftHbV3ONhLbp+KEv0Af141iA==
   </data>
  </layer>
  <objectgroup name="objects">
