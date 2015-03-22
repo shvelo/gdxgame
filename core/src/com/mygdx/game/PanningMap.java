@@ -52,6 +52,9 @@ public class PanningMap implements Screen {
     private TextureRegion currentFrame;
     private HashMap<String, Animation> walkAnimations;
     private byte[][] collisionLayer;
+    private String lastTeleport = "";
+    private float lastX = -1;
+    private float lastY = -1;
 
     private void makeCollisionLayer() {
         TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get("collision");
@@ -68,24 +71,39 @@ public class PanningMap implements Screen {
     }
 
     private boolean checkCollision(float x, float y) {
-        if(collisionLayer[(int)Math.floor(x / tilePixelWidth)][(int)Math.floor(y / tilePixelHeight)] != 0) {
-            return false;
-        } else {
+        try {
+            if (collisionLayer[(int) Math.floor(x / tilePixelWidth)][(int) Math.floor(y / tilePixelHeight)] != 0) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (ArrayIndexOutOfBoundsException ex) {
             return true;
         }
     }
 
     private void checkTeleport() {
+        boolean teleport_overlaps = false;
         for(MapObject obj : map.getLayers().get("objects").getObjects()) {
             if(obj.getProperties().get("type").equals("teleport")
                     && Intersector.overlaps(
                         new Rectangle(x, y, 1, 1),
                         ((RectangleMapObject) obj).getRectangle())
                     ) {
+                teleport_overlaps = true;
+                if(lastTeleport.equals(obj.getName())) {
 
-                map = loadMap(obj.getName());
+                } else {
+                    float cX = x;
+                    float cY = y;
+                    map = loadMap(obj.getName());
+                    lastTeleport = obj.getName();
+                    lastX = cX;
+                    lastY = cY;
+                }
             }
         }
+        if(!teleport_overlaps) lastTeleport = "";
     }
 
     private void calculateSpeed() {
@@ -131,8 +149,15 @@ public class PanningMap implements Screen {
         tilePixelHeight = prop.get("tileheight", Integer.class);
 
         player = (RectangleMapObject)map.getLayers().get("objects").getObjects().get("player");
-        x = player.getRectangle().getX();
-        y = player.getRectangle().getY();
+        if(lastX != -1) {
+            x = lastX;
+            y = lastY;
+            lastX = -1;
+            lastY = -1;
+        } else {
+            x = player.getRectangle().getX();
+            y = player.getRectangle().getY();
+        }
 
         tileW = w / tilePixelWidth;
         tileH = h / tilePixelHeight;
