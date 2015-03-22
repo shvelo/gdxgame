@@ -26,6 +26,10 @@ public class MyGdxGame extends Game {
     private int w;
     private int h;
     public SpriteBatch batch;
+    public boolean leftPressed = false;
+    public boolean rightPressed = false;
+    public boolean upPressed = false;
+    public boolean downPressed = false;
 
     @Override
 	public void create () {
