@@ -51,9 +51,24 @@ public class PanningMap implements Screen {
     private float stateTime = 0f;
     private TextureRegion currentFrame;
     private HashMap<String, Animation> walkAnimations;
+    private byte[][] collisionLayer;
+
+    private void makeCollisionLayer() {
+        TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get("collision");
+        collisionLayer = new byte[layer.getWidth()][layer.getHeight()];
+        for(int i = 0; i < layer.getWidth(); ++i) {
+            for(int j = 0; j < layer.getHeight(); ++j) {
+                if(layer.getCell(i, j) == null) {
+                    collisionLayer[i][j] = 0;
+                } else {
+                    collisionLayer[i][j] = 1;
+                }
+            }
+        }
+    }
 
     private boolean checkCollision(float x, float y) {
-        if(((TiledMapTileLayer)map.getLayers().get("collision")).getCell( (int)Math.floor(x / tilePixelWidth), (int)Math.floor(y / tilePixelHeight)) != null) {
+        if(collisionLayer[(int)Math.floor(x / tilePixelWidth)][(int)Math.floor(y / tilePixelHeight)] != 0) {
             return false;
         } else {
             return true;
@@ -129,6 +144,8 @@ public class PanningMap implements Screen {
 
         renderer = new OrthoCachedTiledMapRenderer(map, 4f / tilePixelWidth);
         renderer.setBlending(true);
+
+        makeCollisionLayer();
 
         return map;
     }
