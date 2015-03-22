@@ -18,6 +18,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
@@ -27,7 +28,7 @@ import java.util.Map;
 
 public class PanningMap implements Screen {
     private final MyGdxGame game;
-    private OrthogonalTiledMapRenderer renderer;
+    private OrthoCachedTiledMapRenderer renderer;
     private int w;
     private int tilePixelWidth;
     private int tilePixelHeight;
@@ -37,8 +38,6 @@ public class PanningMap implements Screen {
     private OrthographicCamera camera;
     private AssetManager assetManager;
     private TiledMap map;
-    private Integer mapWidth;
-    private Integer mapHeight;
     private boolean stopX = false;
     private boolean stopY = false;
     private float xSpeedM = 2f;
@@ -113,8 +112,6 @@ public class PanningMap implements Screen {
 
         MapProperties prop = map.getProperties();
 
-        mapWidth = prop.get("width", Integer.class);
-        mapHeight = prop.get("height", Integer.class);
         tilePixelWidth = prop.get("tilewidth", Integer.class);
         tilePixelHeight = prop.get("tileheight", Integer.class);
 
@@ -130,7 +127,8 @@ public class PanningMap implements Screen {
         camera.zoom = 1;
         camera.update();
 
-        renderer = new OrthogonalTiledMapRenderer(map, 4f / tilePixelWidth);
+        renderer = new OrthoCachedTiledMapRenderer(map, 4f / tilePixelWidth);
+        renderer.setBlending(true);
 
         return map;
     }
