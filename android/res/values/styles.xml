@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="GdxTheme" parent="android:Theme.DeviceDefault.NoActionBar">
+    <style name="GdxTheme" parent="android:Theme.Holo.NoActionBar">
     </style>
 
 </resources>

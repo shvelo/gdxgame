@@ -3,11 +3,21 @@ package com.mygdx.game.stages;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.MyStage;
+import com.mygdx.game.PanningMap;
 
 public class GameStage extends MyStage {
+    private final Label xyLabel;
+    private final Label mapLabel;
+    private final Label lastMapLabel;
+    private final Label lastxyLabel;
+    private final Label lastTeleLabel;
     private int thresholdX;
     private int thresholdY;
     private int screenWidth;
@@ -15,6 +25,40 @@ public class GameStage extends MyStage {
 
     public GameStage(MyGdxGame newContext) {
         super(newContext);
+
+        xyLabel = new Label("DEBUG", context.uiSkin);
+        mapLabel = new Label("DEBUG", context.uiSkin);
+        lastMapLabel = new Label("DEBUG", context.uiSkin);
+        lastxyLabel = new Label("DEBUG", context.uiSkin);
+        lastTeleLabel = new Label("DEBUG", context.uiSkin);
+
+        Table table = new Table();
+        table.setFillParent(true);
+        table.right().top();
+        table.padRight(2f);
+        table.add(xyLabel);
+        table.row().align(Align.right);
+        table.add(mapLabel);
+        table.row().align(Align.right);
+        table.add(lastMapLabel);
+        table.row().align(Align.right);
+        table.add(lastTeleLabel);
+        table.row().align(Align.right);
+        table.add(lastxyLabel);
+        addActor(table);
+    }
+
+    @Override
+    public void draw() {
+        if(context.getScreen() instanceof PanningMap) {
+            PanningMap screen = (PanningMap) context.getScreen();
+            xyLabel.setText(String.format("X: %f.1 Y: %f.1", screen.x, screen.y));
+            lastxyLabel.setText(String.format("lX: %f.1 lY: %f.1", screen.lastX, screen.lastY));
+            mapLabel.setText("map: "+ screen.mapName);
+            lastMapLabel.setText("lastmap: " + screen.lastMap);
+            lastTeleLabel.setText("lasttele: "+ screen.lastTeleport);
+        }
+        super.draw();
     }
 
     private void resetPressed() {

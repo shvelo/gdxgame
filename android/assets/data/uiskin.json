@@ -15,7 +15,7 @@
 	},
 	"com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
 		"default": { "down": "yellow-round-down", "up": "yellow-round", "font": "default-font" },
-		"toggle": { "down": "yellow-round-down", "up": "yellow-round", "checked": "yellow-round-down", "font": "default-font",  "downFontColor": "red" }
+		"toggle": { "down": "yellow-round-down", "up": "yellow-round", "checked": "yellow-round-down", "font": "default-font"}
 	},
 	"com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle": {
 		"default": { "vScroll": "default-scroll", "hScrollKnob": "default-round-large", "background": "default-rect", "hScroll": "default-scroll", "vScrollKnob": "default-round-large" }
@@ -52,7 +52,7 @@
 		"default": { "font": "default-font" }
 	},
 	"com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
-		"default": { "selection": "selection", "background": "textfield", "font": "default-font",  "cursor": "cursor" }
+		"default": { "selection": "selection", "background": "textfield", "font": "default-font", "cursor": "cursor" }
 	},
 	"com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle": {
 		"default": { "checkboxOn": "check-on", "checkboxOff": "check-off", "font": "default-font"}

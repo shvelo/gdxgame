@@ -17,6 +17,7 @@ public class DesktopLauncher {
 		config.y = -1;
 		config.width = (int) screenSize.getWidth();
 		config.height = (int) screenSize.getHeight();
+		config.title = "GDXGame";
 
         config.addIcon("icon_128.png", Files.FileType.Internal);
         config.addIcon("icon_32.png", Files.FileType.Internal);

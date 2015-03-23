@@ -1,30 +1,25 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class PanningMap implements Screen {
     private final MyGdxGame game;
@@ -38,23 +33,22 @@ public class PanningMap implements Screen {
     private OrthographicCamera camera;
     private AssetManager assetManager;
     private TiledMap map;
-    private boolean stopX = false;
-    private boolean stopY = false;
-    private float xSpeedM = 2f;
-    private float ySpeedM = 2f;
+    private final float xSpeedM = 2f;
+    private final float ySpeedM = 2f;
     private float xSpeed = 1;
     private float ySpeed = 1;
-    private float x;
-    private float y;
-    private RectangleMapObject player;
+    public float x;
+    public float y;
     private Animation walkAnimation;
     private float stateTime = 0f;
-    private TextureRegion currentFrame;
     private HashMap<String, Animation> walkAnimations;
     private byte[][] collisionLayer;
-    private String lastTeleport = "";
-    private float lastX = -1;
-    private float lastY = -1;
+    public String lastTeleport = "";
+    public String lastMap = "";
+    public float lastX = -1;
+    public float lastY = -1;
+    public String mapName;
+    public Rectangle playerRect;
 
     private void makeCollisionLayer() {
         TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get("collision");
@@ -96,10 +90,12 @@ public class PanningMap implements Screen {
                 } else {
                     float cX = x;
                     float cY = y;
+                    String cMapName = mapName;
                     map = loadMap(obj.getName());
                     lastTeleport = obj.getName();
                     lastX = cX;
                     lastY = cY;
+                    lastMap = cMapName;
                 }
             }
         }
@@ -113,7 +109,7 @@ public class PanningMap implements Screen {
             ySpeed = 1;
             moving = true;
             walkAnimation = walkAnimations.get("up");
-        } else if(game.downPressed && checkCollision(x, y-8)) {
+        } else if(game.downPressed && checkCollision(x, y-12)) {
             ySpeed = -1;
             moving = true;
             walkAnimation = walkAnimations.get("down");
@@ -137,10 +133,13 @@ public class PanningMap implements Screen {
     }
 
     private TiledMap loadMap(String mapName) {
-        assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-        assetManager.load(mapName, TiledMap.class);
+        this.mapName = mapName;
 
-        assetManager.finishLoading();
+        if(!assetManager.isLoaded(mapName)) {
+            assetManager.load(mapName, TiledMap.class);
+            assetManager.finishLoading();
+        }
+
         map = assetManager.get(mapName);
 
         MapProperties prop = map.getProperties();
@@ -148,21 +147,26 @@ public class PanningMap implements Screen {
         tilePixelWidth = prop.get("tilewidth", Integer.class);
         tilePixelHeight = prop.get("tileheight", Integer.class);
 
-        player = (RectangleMapObject)map.getLayers().get("objects").getObjects().get("player");
-        if(lastX != -1) {
+        RectangleMapObject player = (RectangleMapObject) map.getLayers().get("objects").getObjects().get("player");
+        if(lastMap.equals(mapName)) {
             x = lastX;
             y = lastY;
             lastX = -1;
             lastY = -1;
+            lastMap = "";
         } else {
             x = player.getRectangle().getX();
             y = player.getRectangle().getY();
         }
 
+        playerRect = new Rectangle(x/4f - 2.5f, y/4f - 2.5f, 5, 5);
+
+
         tileW = w / tilePixelWidth;
         tileH = h / tilePixelHeight;
 
-        camera = new OrthographicCamera();
+        if(camera == null) camera = new OrthographicCamera();
+
         camera.setToOrtho(false, tileW, tileH);
         camera.zoom = 1;
         camera.update();
@@ -176,7 +180,7 @@ public class PanningMap implements Screen {
     }
 
     private void loadCharacter() {
-        walkAnimations = new HashMap<String, Animation>();
+        walkAnimations = new HashMap<>();
         Texture characterSheet = new Texture("character.png"); //13x21
         TextureRegion[][] tmp = TextureRegion.split(characterSheet, 64, 64);
         TextureRegion[] walkFramesUp = new TextureRegion[8];
@@ -211,6 +215,7 @@ public class PanningMap implements Screen {
     @Override
     public void show() {
         assetManager = new AssetManager();
+        assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 
         w = Gdx.graphics.getWidth();
         h = Gdx.graphics.getHeight();
@@ -224,27 +229,29 @@ public class PanningMap implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        //game.batch.setProjectionMatrix(camera.combined);
+        game.batch.setProjectionMatrix(camera.combined);
 
-        stateTime += Gdx.graphics.getDeltaTime();
-        currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+        stateTime += delta;
+        TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
 
         renderer.render(new int[]{0, 1, 2, 3});
         game.batch.begin();
-        game.batch.draw(currentFrame, w / 2 - 32, h / 2 - 32);
+        game.batch.draw(currentFrame, playerRect.x, playerRect.y, playerRect.width, playerRect.height);
         game.batch.end();
         renderer.render(new int[]{4, 5, 6});
 
         checkTeleport();
-
         calculateSpeed();
 
-        if(!stopX) x += xSpeed * xSpeedM;
-        if(!stopY) y += ySpeed * ySpeedM;
+        x += xSpeed * xSpeedM;
+        y += ySpeed * ySpeedM;
 
-        camera.position.x = x/4;
-        camera.position.y = y/4;
+        camera.position.x = x/4f;
+        camera.position.y = y/4f;
         camera.update();
+
+        playerRect.setX(x/4f - 2.5f);
+        playerRect.setY(y/4f - 2.5f);
 
         renderer.setView(camera);
     }
