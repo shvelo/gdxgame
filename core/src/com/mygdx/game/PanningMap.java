@@ -15,7 +15,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -23,7 +23,7 @@ import java.util.HashMap;
 
 public class PanningMap implements Screen {
     private final MyGdxGame game;
-    private OrthoCachedTiledMapRenderer renderer;
+    private OrthogonalTiledMapRenderer renderer;
     private int w;
     private int tilePixelWidth;
     private int tilePixelHeight;
@@ -171,9 +171,8 @@ public class PanningMap implements Screen {
         camera.zoom = 1;
         camera.update();
 
-        renderer = new OrthoCachedTiledMapRenderer(map, 4f / tilePixelWidth);
-        renderer.setBlending(true);
-
+        renderer = new OrthogonalTiledMapRenderer(map, 4f / tilePixelWidth);
+        renderer.getBatch().enableBlending();
         makeCollisionLayer();
 
         return map;
@@ -232,7 +231,7 @@ public class PanningMap implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
 
         stateTime += delta;
-        TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+        TextureRegion currentFrame = (TextureRegion) walkAnimation.getKeyFrame(stateTime, true);
 
         renderer.render(new int[]{0, 1, 2, 3});
         game.batch.begin();
